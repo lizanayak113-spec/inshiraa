@@ -4,447 +4,255 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Midnight Escape 3D</title>
+<title>Escape the Haunted Mansion</title>
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#05070c;color:white;font-family:Arial,sans-serif;touch-action:none}
-#game,canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
-#hud{position:fixed;inset:0;pointer-events:none}
-.panel{background:#080d17d9;border:1px solid #ffffff30;border-radius:13px;padding:11px 14px;box-shadow:0 4px 20px #0008}
-#mission{position:absolute;top:12px;left:12px;max-width:78%;font-size:13px}
-#mission strong{display:block;color:#ffd878;font-size:16px;margin-bottom:5px}
-#stats{position:absolute;right:10px;top:12px;font-size:13px;line-height:1.8;text-align:left}
-#inventory{position:absolute;left:12px;top:104px;font-size:12px;color:#ffdfa0;text-shadow:0 2px 4px #000}
-#message{position:absolute;left:50%;bottom:23%;transform:translateX(-50%);background:#080b13ed;border:1px solid #ffffff30;border-radius:12px;padding:13px 17px;text-align:center;font-size:14px;max-width:85%;display:none}
-#controls{position:fixed;inset:0;pointer-events:none}
-#pad{position:absolute;left:14px;bottom:18px;width:140px;height:140px;pointer-events:auto}
-.move{position:absolute;width:44px;height:44px;border:1px solid #ffffff65;background:#111b2bdc;color:white;border-radius:13px;font-size:21px;display:grid;place-items:center;touch-action:none;user-select:none}
-#up{left:48px;top:0}#down{left:48px;bottom:0}#left{left:0;top:48px}#right{right:0;top:48px}
-#actions{position:absolute;right:14px;bottom:20px;display:flex;flex-direction:column;gap:11px;pointer-events:auto}
-.action{width:64px;height:64px;border-radius:50%;border:1px solid #ffffff75;background:#111a2add;color:white;font-size:11px;font-weight:bold;touch-action:none}
-.action:active,.move:active{background:#876b36}
-#hint{position:absolute;bottom:7px;left:50%;transform:translateX(-50%);font-size:10px;color:#ffffffa0;white-space:nowrap}
-#overlay{position:fixed;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse at center,#1b2638f2,#020307f9);text-align:center}
-#card{width:100%;max-width:420px;padding:27px 22px;background:#080d17ed;border:1px solid #d5b36375;border-radius:20px;box-shadow:0 0 60px #000}
-h1{font-size:clamp(35px,9vw,51px);line-height:1.03;margin:0 0 12px;color:#f3cb75;text-shadow:0 0 28px #b77a3255}
-#card p{font-size:14px;line-height:1.6;color:#d3d9e4}
-.big{width:100%;padding:15px;border:0;border-radius:11px;background:#d9b052;color:#171009;font-size:16px;font-weight:bold;margin-top:10px}
-#puzzle{position:fixed;z-index:8;inset:0;display:none;align-items:center;justify-content:center;background:#000c;padding:20px}
-#puzzlebox{width:100%;max-width:330px;padding:23px;background:#101723;border:1px solid #d5b363;border-radius:18px;text-align:center}
-#pin{width:100%;padding:13px;background:#05080e;color:white;border:1px solid #657087;border-radius:8px;text-align:center;font-size:25px;letter-spacing:10px;margin:12px 0}
-.small{padding:11px 16px;margin:4px;border:0;border-radius:8px;background:#d5ad53;color:#17120a;font-weight:bold}
-@media(max-width:500px){
- #mission{font-size:11px;padding:9px;max-width:70%}
- #mission strong{font-size:13px}
- #stats{font-size:11px;padding:8px}
- #pad{width:125px;height:125px;left:10px;bottom:14px}
- .move{width:40px;height:40px}
- #up{left:43px}#down{left:43px}#left{top:43px}#right{top:43px}
- #actions{right:10px;bottom:17px}
- .action{width:57px;height:57px;font-size:10px}
-}
+body{margin:0;background:#080a0d;color:#fff;font-family:Arial,sans-serif;overflow:hidden;touch-action:none}
+canvas{display:block;width:100vw;height:100dvh;background:#101317}
+#hud{position:fixed;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;gap:8px;pointer-events:none;z-index:2}
+.pill{background:#10151ddd;border:1px solid #59616a;border-radius:12px;padding:9px 12px;font-size:13px;box-shadow:0 3px 15px #000}
+#overlay{position:fixed;inset:0;background:linear-gradient(#05070bd9,#090b10f5);display:flex;align-items:center;justify-content:center;padding:20px;z-index:5}
+.panel{max-width:390px;width:100%;text-align:center;background:#11151bf2;border:1px solid #555b65;border-radius:20px;padding:25px 20px;box-shadow:0 0 50px #000}
+h1{font-size:32px;line-height:1.12;color:#e5d5bb;text-shadow:0 0 20px #a33;margin:8px 0 14px}
+p{color:#c1c5cc;line-height:1.5;font-size:14px}
+button{border:1px solid #8c9aa8;background:#202833;color:white;border-radius:12px;padding:13px 18px;font-size:15px;font-weight:bold;cursor:pointer;touch-action:manipulation}
+button:active{transform:scale(.96)}
+#start{width:100%;margin-top:12px;background:#6f2028;border-color:#b45b62}
+#controls{position:fixed;bottom:20px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:flex-end;z-index:3;pointer-events:none}
+.pad{display:grid;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(2,46px);gap:4px;pointer-events:auto}
+.pad button{padding:0;background:#222b35cc;border-color:#75808b;font-size:21px}
+.pad .up{grid-column:2}.pad .left{grid-column:1;grid-row:2}.pad .down{grid-column:2;grid-row:2}.pad .right{grid-column:3;grid-row:2}
+.actions{display:flex;flex-direction:column;gap:8px;pointer-events:auto}
+.actions button{background:#402329dd;min-width:95px;padding:12px 9px}
+#message{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:#141820ed;padding:10px 14px;border-radius:10px;border:1px solid #59616a;z-index:4;text-align:center;font-size:13px;max-width:85%;display:none}
+@media(min-width:700px){.pad{transform:scale(1.15);transform-origin:bottom left}.actions button{min-width:115px}}
 </style>
 </head>
 <body>
-<div id="game"></div>
+<canvas id="game"></canvas>
 <div id="hud">
- <div id="mission" class="panel">
-  <strong>🌙 MIDNIGHT ESCAPE</strong>
-  <span id="objective">Find 3 keys hidden in the mansion.</span>
- </div>
- <div id="stats" class="panel">
-  🔑 Keys: <b id="keys">0/3</b><br>
-  🔐 Secret code: <b id="codestatus">Unknown</b>
- </div>
- <div id="inventory">Inventory: empty</div>
- <div id="message"></div>
+ <div class="pill">🔑 Keys: <span id="keys">0</span>/3</div>
+ <div class="pill">❤️ Health: <span id="health">3</span></div>
+ <div class="pill">⏱ <span id="time">0</span>s</div>
 </div>
+<div id="message"></div>
 <div id="controls">
- <div id="pad">
-  <button class="move" id="up">▲</button>
-  <button class="move" id="down">▼</button>
-  <button class="move" id="left">◀</button>
-  <button class="move" id="right">▶</button>
+ <div class="pad">
+  <button class="up" data-move="up">▲</button>
+  <button class="left" data-move="left">◀</button>
+  <button class="down" data-move="down">▼</button>
+  <button class="right" data-move="right">▶</button>
  </div>
- <div id="actions">
-  <button class="action" id="run">RUN</button>
-  <button class="action" id="act">INTERACT</button>
+ <div class="actions">
+  <button id="interact">🔍 SEARCH</button>
+  <button id="run">🏃 RUN</button>
  </div>
- <div id="hint">Swipe the open screen to look around</div>
 </div>
 <div id="overlay">
- <div id="card">
-  <h1>MIDNIGHT<br>ESCAPE</h1>
-  <p>You wake up inside an abandoned mansion. The main door is locked. Find three keys, discover the secret code and escape before midnight.</p>
-  <p>🎧 Headphones recommended<br>🕯️ Explore every room carefully</p>
-  <button class="big" id="start">ENTER THE MANSION</button>
-  <p style="font-size:11px">3D horror adventure · Mobile touch controls</p>
+ <div class="panel">
+  <div style="font-size:48px">🏚️</div>
+  <h1>ESCAPE THE<br>HAUNTED MANSION</h1>
+  <p>You woke up inside an abandoned mansion. Find all 3 keys, avoid the monster, and escape through the locked front door.</p>
+  <p>Move with the arrows. Search nearby objects. Find the keys before the monster catches you.</p>
+  <button id="start">ENTER THE MANSION</button>
+  <p style="font-size:11px">Headphones recommended • Good luck!</p>
  </div>
 </div>
-<div id="puzzle">
- <div id="puzzlebox">
-  <h2>🔐 THE EXIT LOCK</h2>
-  <p>The note says: “The house remembers: 3 - 1 - 4.”</p>
-  <input id="pin" inputmode="numeric" maxlength="3" placeholder="•••">
-  <button class="small" id="unlock">UNLOCK</button>
-  <button class="small" id="closePuzzle">CLOSE</button>
-  <p id="puzzlemsg"></p>
- </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <script>
 (()=>{
+const canvas=document.getElementById('game');
+const ctx=canvas.getContext('2d');
 const $=id=>document.getElementById(id);
-if(!window.THREE){
- $('card').innerHTML='<h1>CONNECTION LOST</h1><p>Internet connection is needed to load the 3D engine. Connect to the internet and reload the page.</p><button class="big" onclick="location.reload()">RETRY</button>';
- return;
+let W=innerWidth,H=innerHeight,dpr=1;
+function resize(){dpr=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;canvas.width=W*dpr;canvas.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)}
+addEventListener('resize',resize);resize();
+
+const map=[
+"####################",
+"#....#.............#",
+"#....#..####..##...#",
+"#....#........##...#",
+"#.##....##.........#",
+"#.##....##....##...#",
+"#.............##...#",
+"###..#####.........#",
+"#..............##..#",
+"#..##.....##.......#",
+"#..##.....##.###...#",
+"#...............#..#",
+"#..####.............#",
+"#.............##....#",
+"#....##.............#",
+"####################"
+];
+const cols=map[0].length,rows=map.length;
+const tile=54,worldW=cols*tile,worldH=rows*tile;
+const walls=[];
+for(let y=0;y<rows;y++)for(let x=0;x<cols;x++)if(map[y][x]==='#')walls.push({x:x*tile,y:y*tile,w:tile,h:tile});
+function blocked(x,y,r=13){
+ return x<r||y<r||x>worldW-r||y>worldH-r||
+ walls.some(b=>x+r>b.x&&x-r<b.x+b.w&&y+r>b.y&&y-r<b.y+b.h);
 }
-let scene,camera,renderer,clock,player,body,head;
-let started=false,won=false,keys=0,hasNote=false,codeSolved=false;
-let yaw=0,pitch=0,walking=0,running=false;
-let moving={up:false,down:false,left:false,right:false};
-let items=[],solids=[],lastStep=0,messageTimer;
-const held=new Set();
-const V=THREE.Vector3;
-const material=(c,r=.9,e=0)=>new THREE.MeshStandardMaterial({
- color:c,roughness:r,emissive:e,emissiveIntensity:e?0.7:0
-});
-const M={
- floor:material(0x342820),wall:material(0x34333b),wood:material(0x493024),
- dark:material(0x151923),metal:material(0x515867,.45),gold:material(0xffca54,.3,0x805000),
- coat:material(0x222e3b),skin:material(0xc79b78),hair:material(0x171219),
- trousers:material(0x293747),red:material(0x641c27),paper:material(0xc6b58e),
- glow:material(0xff9f32,.4,0xff6200),blue:material(0x7db7ff,.4,0x174c9a)
-};
-function box(x,y,z,w,h,d,mat,solid=false){
- const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
- mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;
- scene.add(mesh);
- if(solid)solids.push({x,z,w,d});
- return mesh;
+const player={x:tile*2.2,y:tile*2.2,r:12,speed:2.45,health:3,keys:0,face:0};
+const keyItems=[
+ {x:tile*8.5,y:tile*2.2,got:false},
+ {x:tile*14.5,y:tile*7.5,got:false},
+ {x:tile*5.5,y:tile*13.3,got:false}
+];
+const exit={x:tile*17.8,y:tile*14.5};
+const monster={x:tile*16.5,y:tile*12.5,speed:0.75,awake:false};
+let running=false,ended=false,won=false,seconds=0,last=0,acc=0,damageCooldown=0;
+let soundCtx=null,pressed={},joystick={x:0,y:0},sprint=false;
+function sound(freq=220,duration=.12,type='sawtooth',volume=.035){
+ try{soundCtx=soundCtx||new(window.AudioContext||window.webkitAudioContext)();if(soundCtx.state==='suspended')soundCtx.resume();let o=soundCtx.createOscillator(),g=soundCtx.createGain();o.type=type;o.frequency.value=freq;g.gain.value=volume;o.connect(g);g.connect(soundCtx.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,soundCtx.currentTime+duration);o.stop(soundCtx.currentTime+duration)}catch(e){}
 }
-function light(x,y,z,color,power,range){
- const l=new THREE.PointLight(color,power,range);
- l.position.set(x,y,z);scene.add(l);return l;
-}
-function addItem(type,id,x,z){
- const g=new THREE.Group();
- if(type==='key'){
-  const ring=new THREE.Mesh(new THREE.TorusGeometry(.14,.035,8,18),M.gold);
-  ring.rotation.x=Math.PI/2;g.add(ring);
-  const stem=new THREE.Mesh(new THREE.BoxGeometry(.055,.055,.31),M.gold);
-  stem.position.z=.18;g.add(stem);
-  const tooth=new THREE.Mesh(new THREE.BoxGeometry(.11,.055,.07),M.gold);
-  tooth.position.set(.035,0,.31);g.add(tooth);
- }else if(type==='note'){
-  const sheet=new THREE.Mesh(new THREE.BoxGeometry(.48,.025,.34),M.paper);
-  sheet.rotation.y=.25;g.add(sheet);
- }else if(type==='panel'){
-  const base=new THREE.Mesh(new THREE.BoxGeometry(.65,.72,.14),M.metal);
-  g.add(base);
-  const screen=new THREE.Mesh(new THREE.BoxGeometry(.27,.16,.035),M.red);
-  screen.position.set(0,.15,.09);g.add(screen);
-  g.position.y=1.1;
- }else if(type==='exit'){
-  const door=new THREE.Mesh(new THREE.BoxGeometry(1.7,2.9,.2),M.wood);
-  door.position.y=1.45;g.add(door);
-  for(let y=.35;y<2.8;y+=.4){
-   const line=new THREE.Mesh(new THREE.BoxGeometry(1.55,.025,.23),M.dark);
-   line.position.set(0,y,.01);g.add(line);
-  }
-  const knob=new THREE.Mesh(new THREE.SphereGeometry(.08,12,10),M.gold);
-  knob.position.set(.57,1.3,.14);g.add(knob);
- }else if(type==='chest'){
-  const base=new THREE.Mesh(new THREE.BoxGeometry(.8,.55,.6),M.wood);
-  base.position.y=.3;g.add(base);
-  const lid=new THREE.Mesh(new THREE.BoxGeometry(.83,.13,.63),M.red);
-  lid.position.y=.63;g.add(lid);
- }
- g.position.x=x;g.position.z=z;
- if(type==='key'||type==='note')g.position.y=.72;
- scene.add(g);
- items.push({type,id,x,z,mesh:g});
- if(type==='key')light(x,1,z,0xffba39,.6,3);
-}
-function buildHouse(){
- box(0,-.25,0,22,.5,24,M.floor);
- box(0,4,0,22,.3,24,M.dark);
- // Outer walls
- box(0,1.8,-12,22,3.8,.45,M.wall,true);
- box(0,1.8,12,22,3.8,.45,M.wall,true);
- box(-11,1.8,0,.45,3.8,24,M.wall,true);
- box(11,1.8,0,.45,3.8,24,M.wall,true);
- // Interior dividers, with gaps to pass through
- box(-5,1.6,-5,.3,3.2,14,M.wall,true);
- box(5,1.6,-5,.3,3.2,14,M.wall,true);
- box(-8,1.6,2,6,.3,3.2,M.wall,true);
- box(8,1.6,2,6,.3,3.2,M.wall,true);
- box(-8,1.6,-3,6,.3,3.2,M.wall,true);
- box(8,1.6,-3,6,.3,3.2,M.wall,true);
- // Wall decorations and old furniture
- for(const z of [-8,-1,7]){
-  box(-8,.65,z,1.25,1.3,.8,M.wood,true);
-  box(8,.65,z,1.25,1.3,.8,M.wood,true);
- }
- box(0,.65,-8,2.4,1.3,.8,M.wood,true);
- box(-1,.08,0,3,.08,2,M.red);
- for(const x of [-3,3])for(const z of [-8,0,8])
-  box(x,1.6,z,.32,3.2,.32,M.wood,true);
- // Portraits, frames and shelves
- for(const [x,z] of [[-8,-11.73],[8,-11.73],[-8,11.73],[8,11.73]]){
-  const frame=box(x,2.35,z,.9,1.15,.1,M.wood);
-  box(x,2.35,z+(z<0?.065:-.065),.69,.91,.035,M.dark);
- }
- // Broken floorboards
- for(let i=0;i<9;i++)box(-9+i*2.2,.015,-10.5,.035,.02,2,M.dark);
- // Lights and flickering candle-like fixtures
- light(0,3,-6,0xffa34c,2.3,12);
- light(-8,2.6,0,0x497dff,1.8,8);
- light(8,2.6,0,0xff5a3d,1.3,8);
- light(0,2.8,8,0x6b9fff,1.5,9);
- for(const [x,z] of [[-8,-7],[8,-7],[-8,6],[8,6],[0,3]]){
-  const candle=new THREE.Mesh(new THREE.CylinderGeometry(.045,.06,.36,8),M.paper);
-  candle.position.set(x,1.05,z);scene.add(candle);
-  const flame=new THREE.Mesh(new THREE.SphereGeometry(.065,8,8),M.glow);
-  flame.scale.y=1.7;flame.position.set(x,1.3,z);scene.add(flame);
-  light(x,1.5,z,0xff8b34,1.1,4);
- }
- // Exit and quest objects
- addItem('exit','exit',0,-11.55);
- addItem('key','key1',-8,-8);
- addItem('key','key2',8,7);
- addItem('key','key3',0,9);
- addItem('note','note',-8,-1);
- addItem('panel','panel',8,-1);
- addItem('chest','chest',-8,7);
- // Rug and tables
- box(0,.015,0,5,.025,3,M.red);
- for(let i=0;i<6;i++)box(-2.3+i*.9,.04,0,.025,.02,2.6,M.wood);
-}
-function buildPlayer(){
- player=new THREE.Group();
- body=new THREE.Mesh(new THREE.CapsuleGeometry(.28,.56,4,8),M.coat);
- body.position.y=1.05;player.add(body);
- head=new THREE.Mesh(new THREE.SphereGeometry(.23,16,12),M.skin);
- head.position.y=1.65;player.add(head);
- const hair=new THREE.Mesh(new THREE.SphereGeometry(.245,12,10),M.hair);
- hair.scale.set(1,1.15,1);hair.position.set(0,1.74,-.045);player.add(hair);
- for(const x of [-.16,.16]){
-  const leg=new THREE.Mesh(new THREE.BoxGeometry(.16,.48,.19),M.trousers);
-  leg.position.set(x,.36,0);player.add(leg);
-  const arm=new THREE.Mesh(new THREE.BoxGeometry(.13,.52,.15),M.coat);
-  arm.position.set(x*2,1.03,0);player.add(arm);
- }
- player.position.set(0,0,8);scene.add(player);
-}
-function init(){
- scene=new THREE.Scene();
- scene.background=new THREE.Color(0x060a13);
- scene.fog=new THREE.FogExp2(0x080b13,.026);
- camera=new THREE.PerspectiveCamera(66,innerWidth/innerHeight,.1,100);
- renderer=new THREE.WebGLRenderer({antialias:true});
- renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
- renderer.setSize(innerWidth,innerHeight);
- renderer.shadowMap.enabled=true;
- renderer.shadowMap.type=THREE.PCFSoftShadowMap;
- renderer.toneMapping=THREE.ACESFilmicToneMapping;
- renderer.toneMappingExposure=1.15;
- $('game').appendChild(renderer.domElement);
- scene.add(new THREE.HemisphereLight(0x8797b5,0x21140e,1.4));
- const moon=new THREE.DirectionalLight(0x91a5d0,1.6);
- moon.position.set(-4,9,5);moon.castShadow=true;scene.add(moon);
- clock=new THREE.Clock();
- buildHouse();buildPlayer();
- addEventListener('resize',resize);
- renderer.domElement.addEventListener('pointerdown',lookStart);
- renderer.domElement.addEventListener('pointermove',lookMove);
- renderer.domElement.addEventListener('pointerup',lookEnd);
- renderer.domElement.addEventListener('pointercancel',lookEnd);
- animate();
-}
-function resize(){
- camera.aspect=innerWidth/innerHeight;
- camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);
-}
-function sound(freq=240,duration=.14,type='sine',volume=.055){
- try{
-  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-  if(audioCtx.state==='suspended')audioCtx.resume();
-  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
-  o.type=type;
-  o.frequency.setValueAtTime(freq,audioCtx.currentTime);
-  o.frequency.exponentialRampToValueAtTime(Math.max(35,freq*.55),audioCtx.currentTime+duration);
-  g.gain.setValueAtTime(volume,audioCtx.currentTime);
-  g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+duration);
-  o.connect(g);g.connect(audioCtx.destination);
-  o.start();o.stop(audioCtx.currentTime+duration);
- }catch(e){}
-}
-let audioCtx=null;
-function ambience(){
- try{
-  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-  if(audioCtx.state==='suspended')audioCtx.resume();
-  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
-  o.type='sine';o.frequency.value=48;g.gain.value=.018;
-  o.connect(g);g.connect(audioCtx.destination);o.start();
- }catch(e){}
-}
-function toast(text){
+function say(text){
  const m=$('message');m.textContent=text;m.style.display='block';
- clearTimeout(messageTimer);
- messageTimer=setTimeout(()=>m.style.display='none',2600);
+ clearTimeout(say.timer);say.timer=setTimeout(()=>m.style.display='none',2100);
 }
-function dist(a,b){return Math.hypot(a.x-b.x,a.z-b.z)}
-function nearItem(){
- let best=null,dmin=2.2;
- for(const o of items){
-  if(held.has(o.id))continue;
-  const d=dist(player.position,o);
-  if(d<dmin){dmin=d;best=o}
- }
- return best;
+function updateHud(){
+ $('keys').textContent=player.keys;$('health').textContent=player.health;$('time').textContent=seconds;
+}
+function reset(){
+ player.x=tile*2.2;player.y=tile*2.2;player.health=3;player.keys=0;player.face=0;
+ keyItems.forEach(k=>k.got=false);
+ monster.x=tile*16.5;monster.y=tile*12.5;monster.awake=false;
+ seconds=0;acc=0;damageCooldown=0;ended=false;won=false;running=true;
+ $('overlay').style.display='none';updateHud();say('Find the 3 keys. Something is moving in the dark...');
+ sound(130,.3);
+}
+function move(dx,dy){
+ let speed=player.speed*(sprint?1.7:1);
+ if(dx&&dy){dx*=.707;dy*=.707}
+ if(dx||dy)player.face=Math.atan2(dy,dx);
+ if(!blocked(player.x+dx*speed,player.y))player.x+=dx*speed;
+ if(!blocked(player.x,player.y+dy*speed))player.y+=dy*speed;
 }
 function interact(){
- if(!started||won)return;
- const o=nearItem();
- if(!o){toast('Nothing nearby. Explore the rooms.');sound(120,.08);return}
- if(o.type==='key'){
-  held.add(o.id);keys++;scene.remove(o.mesh);
-  $('keys').textContent=keys+'/3';
-  $('inventory').textContent='Inventory: '+keys+' key(s)'+(hasNote?' · secret note':'');
-  sound(740,.2,'triangle',.09);toast('You found an old key! 🔑');
-  $('objective').textContent=keys<3?'Find the remaining keys.':'Find the lock panel.';
- }else if(o.type==='note'){
-  held.add(o.id);scene.remove(o.mesh);hasNote=true;
-  $('codestatus').textContent='Clue found';
-  $('inventory').textContent='Inventory: '+keys+' key(s) · secret note';
-  sound(420,.18,'triangle');toast('The note reveals the code: 314.');
-  $('objective').textContent='Collect all keys and find the lock panel.';
- }else if(o.type==='panel'){
-  if(keys<3){toast('The panel needs all 3 keys.');sound(130,.12);return}
-  if(!hasNote){toast('Find the secret note first.');return}
-  $('puzzle').style.display='flex';$('pin').value='';$('puzzlemsg').textContent='';
- }else if(o.type==='exit'){
-  if(!codeSolved){toast('The exit is locked. Find all keys and solve the code.');sound(110,.2);return}
-  won=true;
-  sound(880,.4,'triangle',.1);
-  $('overlay').style.display='flex';
-  $('card').innerHTML='<h1>YOU ESCAPED!</h1><p>You found every key, solved the mystery and escaped the haunted mansion. 🌙</p><p>Bravery: ⭐⭐⭐</p><button class="big" id="again">PLAY AGAIN</button>';
-  $('again').onclick=()=>location.reload();
- }
-}
-function solve(){
- if(keys<3){$('puzzlemsg').textContent='You still need all three keys.';return}
- if(!$('pin').value.trim()){ $('puzzlemsg').textContent='Enter the 3-digit code.';return}
- if($('pin').value.trim()==='314'){
-  codeSolved=true;$('puzzle').style.display='none';
-  $('codestatus').textContent='Unlocked';
-  $('objective').textContent='The exit is unlocked. Find the main door!';
-  sound(820,.35,'triangle',.1);toast('LOCK OPENED! Now reach the main exit. 🚪');
- }else{
-  $('puzzlemsg').textContent='Wrong code! Check the note again.';
-  sound(100,.25,'sawtooth');
- }
-}
-$('unlock').onclick=solve;
-$('closePuzzle').onclick=()=>$('puzzle').style.display='none';
-$('pin').addEventListener('keydown',e=>{if(e.key==='Enter')solve()});
-$('start').onclick=()=>{
- $('overlay').style.display='none';started=true;
- try{audioCtx=new(window.AudioContext||window.webkitAudioContext)();ambience()}catch(e){}
- toast('Find the keys. Do not leave any room unexplored.');
-};
-$('act').addEventListener('pointerdown',e=>{e.preventDefault();interact()});
-$('run').addEventListener('pointerdown',e=>{e.preventDefault();running=true});
-['pointerup','pointercancel','pointerleave'].forEach(ev=>$('run').addEventListener(ev,()=>running=false));
-const buttons={up:'up',down:'down',left:'left',right:'right'};
-for(const [id,k] of Object.entries(buttons)){
- const el=$(id);
- el.addEventListener('pointerdown',e=>{e.preventDefault();moving[k]=true;el.setPointerCapture?.(e.pointerId)});
- ['pointerup','pointercancel','pointerleave','lostpointercapture'].forEach(ev=>el.addEventListener(ev,()=>moving[k]=false));
-}
-addEventListener('keydown',e=>{
- if(e.code==='KeyW'||e.code==='ArrowUp')moving.up=true;
- if(e.code==='KeyS'||e.code==='ArrowDown')moving.down=true;
- if(e.code==='KeyA'||e.code==='ArrowLeft')moving.left=true;
- if(e.code==='KeyD'||e.code==='ArrowRight')moving.right=true;
- if(e.code==='ShiftLeft')running=true;
- if(e.code==='KeyE'||e.code==='Space')interact();
-});
-addEventListener('keyup',e=>{
- if(e.code==='KeyW'||e.code==='ArrowUp')moving.up=false;
- if(e.code==='KeyS'||e.code==='ArrowDown')moving.down=false;
- if(e.code==='KeyA'||e.code==='ArrowLeft')moving.left=false;
- if(e.code==='KeyD'||e.code==='ArrowRight')moving.right=false;
- if(e.code==='ShiftLeft')running=false;
-});
-let lookOrigin=null;
-function lookStart(e){
- if(!started||$('puzzle').style.display==='flex')return;
- if(e.clientX<innerWidth*.34&&e.clientY>innerHeight*.55)return;
- lookOrigin={x:e.clientX,y:e.clientY};
-}
-function lookMove(e){
- if(!lookOrigin||!started)return;
- const dx=e.clientX-lookOrigin.x,dy=e.clientY-lookOrigin.y;
- yaw-=dx*.006;
- pitch=Math.max(-.4,Math.min(.35,pitch+dy*.002));
- lookOrigin={x:e.clientX,y:e.clientY};
-}
-function lookEnd(){lookOrigin=null}
-function canMove(x,z){
- // Keep player inside the mansion.
- if(x<-10||x>10||z<-11||z>11)return false;
- // Test wall collision with a little safety margin.
- for(const s of solids){
-  if(Math.abs(x-s.x)<s.w/2+.34&&Math.abs(z-s.z)<s.d/2+.34)return false;
- }
- return true;
-}
-function updatePlayer(dt){
- if(!started||won)return;
- let f=(moving.up?1:0)-(moving.down?1:0);
- let s=(moving.right?1:0)-(moving.left?1:0);
- if(!f&&!s){walking=0;return}
- const len=Math.hypot(f,s);f/=len;s/=len;
- const speed=running?4.5:2.45;
- const fx=-Math.sin(yaw),fz=-Math.cos(yaw);
- const rx=Math.cos(yaw),rz=-Math.sin(yaw);
- const dx=(fx*f+rx*s)*speed*dt;
- const dz=(fz*f+rz*s)*speed*dt;
- let nx=player.position.x+dx,nz=player.position.z+dz;
- if(canMove(nx,player.position.z))player.position.x=nx;
- if(canMove(player.position.x,nz))player.position.z=nz;
- player.rotation.y=Math.atan2(dx,dz);
- walking+=dt*(running?13:8);
- body.position.y=1.05+Math.abs(Math.sin(walking))*.035;
- if(performance.now()-lastStep>(running?270:440)){
-  sound(running?100:80,.045,'triangle',.018);lastStep=performance.now();
- }
-}
-function updateCamera(){
- const target=new V(player.position.x,player.position.y+1.15,player.position.z);
- const forward=new V(Math.sin(yaw),0,Math.cos(yaw));
- const back=new V(-forward.x,0,-forward.z);
- const pos=target.clone().addScaledVector(back,4.7);
- pos.y+=1.35+pitch*2;
- camera.position.lerp(pos,.14);
- camera.lookAt(target.x,target.y+pitch*1.5,target.z);
-}
-function animate(){
- requestAnimationFrame(animate);
- const dt=Math.min(clock.getDelta(),.04);
- for(const o of items){
-  if(o.type==='key'&&!held.has(o.id)){
-   o.mesh.rotation.y+=dt*1.15;
-   o.mesh.position.y=.72+Math.sin(performance.now()*.002+o.x)*.09;
+ if(!running||ended)return;
+ for(const k of keyItems){
+  if(!k.got&&Math.hypot(k.x-player.x,k.y-player.y)<tile*.85){
+   k.got=true;player.keys++;updateHud();sound(680,.18,'sine');say('You found a key! '+player.keys+'/3');
+   if(player.keys===3){monster.awake=true;say('All keys found! The monster has awakened! RUN!');sound(90,.6)}
+   return;
   }
  }
- updatePlayer(dt);updateCamera();
- 
-renderer.render(scene,camera);
+ if(Math.hypot(exit.x-player.x,exit.y-player.y)<tile*1.25){
+  if(player.keys===3){won=true;finish(true)}else{say('The door is locked. You need '+(3-player.keys)+' more key(s).');sound(110,.2)}
+  return;
+ }
+ say('Nothing nearby. Search the rooms for glowing keys.');
 }
-init();
+function finish(win){
+ ended=true;running=false;won=win;sound(win?740:75,.5,win?'sine':'sawtooth');
+ $('overlay').style.display='flex';
+ $('overlay').querySelector('.panel').innerHTML=win?
+ '<div style="font-size:55px">🏆🚪</div><h1>YOU ESCAPED!</h1><p>You escaped the haunted mansion in '+seconds+' seconds.</p><button id="start">PLAY AGAIN</button>':
+ '<div style="font-size:55px">👻</div><h1>CAUGHT!</h1><p>The monster got you. Collect the keys faster and try again.</p><button id="start">TRY AGAIN</button>';
+ $('start').onclick=reset;
+}
+function update(dt){
+ if(!running||ended)return;
+ acc+=dt;if(acc>=1){seconds++;acc=0;updateHud()}
+ let dx=0,dy=0;
+ if(pressed.up||pressed.ArrowUp||pressed.w)dy--;
+ if(pressed.down||pressed.ArrowDown||pressed.s)dy++;
+ if(pressed.left||pressed.ArrowLeft||pressed.a)dx--;
+ if(pressed.right||pressed.ArrowRight||pressed.d)dx++;
+ dx+=joystick.x;dy+=joystick.y;
+ if(dx||dy)move(Math.sign(dx),Math.sign(dy));
+ if(monster.awake){
+  let mx=player.x-monster.x,my=player.y-monster.y,dist=Math.hypot(mx,my)||1;
+  let sp=monster.speed*(dist<tile*3?1.3:1);
+  let nx=monster.x+mx/dist*sp,ny=monster.y+my/dist*sp;
+  if(!blocked(nx,monster.y,15))monster.x=nx;
+  if(!blocked(monster.x,ny,15))monster.y=ny;
+  if(dist<27&&damageCooldown<=0){
+   player.health--;damageCooldown=1.25;sound(85,.3);say('The monster hit you! Keep moving!');
+   if(player.health<=0){finish(false);return}updateHud();
+  }
+ }
+ if(damageCooldown>0)damageCooldown-=dt;
+}
+function draw(){
+ ctx.clearRect(0,0,W,H);
+ let camX=Math.max(0,Math.min(worldW-W,player.x-W/2));
+ let camY=Math.max(0,Math.min(worldH-H,player.y-H/2));
+ ctx.save();ctx.translate(-camX,-camY);
+ ctx.fillStyle='#171a1c';ctx.fillRect(0,0,worldW,worldH);
+ for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
+  let px=x*tile,py=y*tile;
+  if(map[y][x]==='#'){
+   ctx.fillStyle='#35383a';ctx.fillRect(px,py,tile,tile);
+   ctx.fillStyle='#49494a';ctx.fillRect(px+2,py+2,tile-4,tile-4);
+   ctx.fillStyle='#27292b';ctx.fillRect(px+5,py+5,tile-10,tile-10);
+   ctx.strokeStyle='#565352';ctx.strokeRect(px+5,py+5,tile-10,tile-10);
+  }else{
+   ctx.fillStyle=((x+y)%2)?'#292a28':'#30302d';ctx.fillRect(px,py,tile,tile);
+   ctx.strokeStyle='#393936';ctx.strokeRect(px,py,tile,tile);
+   if((x*7+y*13)%19===0){ctx.fillStyle='#514b42';ctx.fillRect(px+12,py+17,8,2)}
+  }
+ }
+ // Exit door
+ ctx.fillStyle='#5c3027';ctx.fillRect(exit.x-20,exit.y-27,40,54);
+ ctx.strokeStyle=player.keys===3?'#68e99a':'#bd6c4e';ctx.lineWidth=3;ctx.strokeRect(exit.x-20,exit.y-27,40,54);
+ ctx.fillStyle='#e7bd62';ctx.beginPath();ctx.arc(exit.x+10,exit.y,3,0,Math.PI*2);ctx.fill();
+ // keys
+ keyItems.forEach(k=>{if(k.got)return;
+  let pulse=1+Math.sin(performance.now()*.006+k.x)*.12;
+  ctx.save();ctx.translate(k.x,k.y);ctx.scale(pulse,pulse);
+  ctx.shadowColor='#ffe879';ctx.shadowBlur=20;ctx.strokeStyle='#ffe879';ctx.lineWidth=4;
+  ctx.beginPath();ctx.arc(-5,-5,7,0,Math.PI*2);ctx.moveTo(1,0);ctx.lineTo(16,14);ctx.lineTo(11,18);ctx.moveTo(8,10);ctx.lineTo(4,14);ctx.stroke();ctx.restore();
+ });
+ // monster
+ if(monster.awake){
+  ctx.save();ctx.translate(monster.x,monster.y);
+  ctx.shadowColor='#d00026';ctx.shadowBlur=25;
+  ctx.fillStyle='#171015';ctx.beginPath();ctx.ellipse(0,0,18,22,0,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#ff243e';ctx.beginPath();ctx.arc(-6,-4,3,0,Math.PI*2);ctx.arc(6,-4,3,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#8a1426';ctx.beginPath();ctx.moveTo(-7,9);ctx.lineTo(7,9);ctx.lineTo(0,15);ctx.fill();ctx.restore();
+ }
+ // player
+ ctx.save();ctx.translate(player.x,player.y);ctx.rotate(player.face);
+ ctx.fillStyle='#0008';ctx.beginPath();ctx.ellipse(2,6,15,11,0,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#7897b7';ctx.beginPath();ctx.ellipse(0,2,11,14,0,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#e3c4a0';ctx.beginPath();ctx.arc(0,-10,8,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#2a1d1a';ctx.beginPath();ctx.arc(0,-13,8,Math.PI,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#fff';ctx.fillRect(4,-12,3,2);ctx.restore();
+ // darkness with light around player
+ let grd=ctx.createRadialGradient(player.x,player.y,35,player.x,player.y,220);
+ grd.addColorStop(0,'#00000000');grd.addColorStop(.6,'#03050955');grd.addColorStop(1,'#010207ed');
+ ctx.fillStyle=grd;ctx.fillRect(camX,camY,W,H);
+ // small compass marker
+ ctx.restore();
+ // interaction hint
+ let nearest=keyItems.some(k=>!k.got&&Math.hypot(k.x-player.x,k.y-player.y)<tile*.85);
+ if(nearest){ctx.fillStyle='#fff';ctx.font='bold 14px Arial';ctx.textAlign='center';ctx.fillText('SEARCH FOR KEY',W/2,H-115)}
+}
+function loop(t){
+ let dt=Math.min((t-last)/16.67||1,2);last=t;
+ update(dt/60);draw();requestAnimationFrame(loop);
+}
+document.querySelectorAll('[data-move]').forEach(b=>{
+ const key=b.dataset.move;
+ b.addEventListener('pointerdown',e=>{e.preventDefault();pressed[key]=true;b.setPointerCapture(e.pointerId)});
+ const off=e=>{pressed[key]=false};
+ b.addEventListener('pointerup',off);b.addEventListener('pointercancel',off);b.addEventListener('lostpointercapture',off);
+});
+$('run').addEventListener('pointerdown',e=>{e.preventDefault();sprint=true});
+['pointerup','pointercancel','pointerleave'].forEach(ev=>$('run').addEventListener(ev,()=>sprint=false));
+$('interact').addEventListener('click',interact);
+$('start').addEventListener('click',reset);
+addEventListener('keydown',e=>{
+ if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();
+ pressed[e.key]=true;
+ if(e.key==='e'||e.key==='E'||e.key===' ')interact();
+ if(e.key==='Shift')sprint=true;
+});
+addEventListener('keyup',e=>{pressed[e.key]=false;if(e.key==='Shift')sprint=false});
+addEventListener('blur',()=>{pressed={};sprint=false});
+requestAnimationFrame(loop);
 })();
+</script>
+</body>
+</html>
